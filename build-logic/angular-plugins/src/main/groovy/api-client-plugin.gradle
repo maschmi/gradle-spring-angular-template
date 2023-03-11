@@ -1,0 +1,55 @@
+plugins {
+    id 'org.openapi.generator'
+}
+
+class ClientApiSpec {
+    String key
+    String inputSpec
+
+    ClientApiSpec(String key, String inputSpec) {
+        this.key = key
+        this.inputSpec = inputSpec
+    }
+}
+
+interface ApiExtension {
+    ListProperty<ClientApiSpec> getInputSpecs()
+    Property<String> getOutputDir()
+}
+
+class ApiClientPlugin implements Plugin<Project> {
+
+    @Override
+    void apply(Project project) {
+        ApiExtension extension = project.extensions.create('apiClient', ApiExtension)
+        project.tasks.register("generateClientApi") {
+            group = "openapi"
+            Collection<Task> genTasks
+            doFirst {
+                //first we created the task for each config pair
+                genTasks =  extension.inputSpecs.get()
+                        .collect {
+                            def key = it.key
+                            def file = it.inputSpec
+                            return configureClientApi(project, key, file, extension)
+                        }
+                //then we execute each task action
+                genTasks.each {
+                    t ->
+                        t.actions.each { it.execute(t) }
+                }
+            }
+
+        }
+    }
+
+    private Task configureClientApi(Project project, key, file, extension) {
+        // here we can configure the task directly as we plan to run it directly later
+        return project.tasks.create(name: key, type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+            generatorName = "typescript-angular"
+            inputSpec = file
+            outputDir = extension.outputDir.get() + File.separator + key
+        }
+    }
+}
+

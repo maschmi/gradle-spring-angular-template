@@ -1,0 +1,23 @@
+plugins {
+    id("java-platform")
+}
+
+repositories {
+    mavenCentral()
+}
+
+group = 'de.maschmi.template.reactive.example'
+
+javaPlatform.allowDependencies()
+
+def springVersion = "3.0.2"
+
+dependencies {
+    api enforcedPlatform("org.springframework.boot:spring-boot-dependencies:${springVersion}")
+}
+
+dependencies.constraints {
+    api("org.springframework.boot:spring-boot-gradle-plugin:${springVersion}")
+    api("org.openapitools:openapi-generator-gradle-plugin:6.2.1")
+    api("org.openapitools:jackson-databind-nullable:0.2.6")
+}

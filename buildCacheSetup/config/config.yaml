@@ -1,0 +1,20 @@
+version: 5
+cache:
+  accessControl:
+    users:
+      test:
+        level: readwrite
+        password: VyKp7bhAnLWixgpoaK4FD4SEk9S0mW1xrbGv/Y8HDS0=:YIk6GgpHI71K2eEaStZn4msMYRLYgU1+vNyLECw/GnM=
+        note: ""
+    anonymousLevel: none
+  freeSpaceBufferSize: 1024
+  maxEntryAgeInHours: null
+  maxArtifactSize: 100
+  targetSize:
+    type: fixed
+    size: 10000
+uiAccess:
+  type: secure
+  username: test
+  password: DRmEN1E6m6tAPEkI5pZ5zQedvGrLeYwRIz4I+JI9efI=:dTtG2hvAJA1B0PWIOPw5Qprls+XImAcRnGqMZAFl7iI=
+registration: null

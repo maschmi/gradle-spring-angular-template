@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+        http://www.liquibase.org/xml/ns/pro
+        http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+
+    <changeSet id="example-schema" author="maschmi">
+        <sql>CREATE SCHEMA example_domain;</sql>
+    </changeSet>
+
+    <changeSet id="example-1" author="maschmi">
+        <createTable tableName="example" schemaName="example_domain">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="pk_example"/>
+            </column>
+            <column name="number" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="example-data-load" author="maschmi">
+        <sql>
+            INSERT INTO example_domain.example VALUES (0,50,'fifty');
+            INSERT INTO example_domain.example VALUES (1,51,'fifty-one');
+            INSERT INTO example_domain.example VALUES (2,100,'one hundred');
+            INSERT INTO example_domain.example VALUES (3,0,'null');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

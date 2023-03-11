@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Backend" pattern="file[backend*]:*//*||file[backend]:*/||file[backend.app]:*/||file[backend.app.main]:*/||file[de.maschmi.template.reactive.example.app.app.backend.app.main]:java//*" />
+</component>

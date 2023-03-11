@@ -1,0 +1,91 @@
+plugins {
+    id "com.github.node-gradle.node"
+}
+
+def props = new Properties()
+file("gradle.properties").withInputStream { props.load(it) }
+def nodeVersion = props.getProperty("nodeVersion")
+
+node {
+    version = "${nodeVersion}"
+    download = true
+    workDir = rootProject.file(".gradle/nodejs")
+
+    npmWorkDir = rootProject.file(".gradle/npm")
+}
+
+def findNgScript() {
+    def nodeSubDir = new File("${project.rootDir}/.gradle/nodejs")
+            .listFiles()
+    def nodeDir = nodeSubDir.find {it.name.contains("node-v${nodeVersion}")}
+    return file("${nodeDir}/lib/node_modules/@angular/cli/bin/ng.js")
+}
+
+tasks.register("installNg", NpmTask) {
+    group "angular"
+    args = ["install", "-g", "@angular/cli@${angularVersion}"]
+}
+
+tasks.register("ngCreateApp", NodeTask) {
+    group "angular"
+    script = findNgScript()
+    args = ["new", "--skip-git", "--routing", "--style=scss", "--directory=.", "frontend"]
+}
+
+tasks.register("disableAnalytics", NodeTask) {
+    group "angular"
+    script = findNgScript()
+    args = ["analytics", "disable"]
+}
+
+tasks.register("start", NpmTask) {
+    group = "build"
+    dependsOn("nodeSetup")
+    dependsOn("npm_install")
+    dependsOn("generateClientApi")
+
+    args = ["start"]
+}
+
+tasks.register("test", NpmTask) {
+    group = "verification"
+    dependsOn("nodeSetup")
+    dependsOn("npmCi")
+    dependsOn("generateClientApi")
+
+    outputs.cacheIf { true }
+
+    args = ["test"]
+}
+
+tasks.register("build", NpmTask) {
+    group = "build"
+    dependsOn("nodeSetup")
+    dependsOn("npmCi")
+    dependsOn("generateClientApi")
+
+    inputs.dir("${rootProject.rootDir}/src")
+    outputs.dir("${rootProject.rootDir}/dist")
+
+    outputs.cacheIf { true }
+    args = ["run", "build", "-c", "production"]
+}
+
+tasks.register("clean") {
+    group "build"
+    delete files(rootProject.file(".gradle/nodejs"))
+    delete files(rootProject.file(".gradle/npm"))
+    delete files(rootProject.file("dist"))
+    delete files(rootProject.file("src/generated"))
+    delete files(rootProject.file("node_modules"))
+    delete files(rootProject.file(".angular"))
+}
+
+tasks.register("npmCi",  NpmTask) {
+    args = ["ci"]
+    inputs.file(rootProject.file("package.json")).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(rootProject.file("package-lock.json")).withPathSensitivity(PathSensitivity.RELATIVE)
+
+    outputs.dir "${rootProject.rootDir}/node_modules"
+    outputs.cacheIf { true }
+}

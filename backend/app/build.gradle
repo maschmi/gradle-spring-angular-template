@@ -1,0 +1,35 @@
+plugins {
+    id 'backend-application'
+}
+
+apply plugin: ApiPlugin
+
+apiServer {
+    inputSpecs = [
+            new ServerApiSpec("example", "$rootDir/../api/template.api.yaml"),
+            new ServerApiSpec("example2", "$rootDir/../api/template2.api.yaml")
+    ]
+    outputDir = "$buildDir/openApiGenerate"
+    title = rootProject.name
+    artifactId = rootProject.name
+    packageBase = "de.maschmi.template.reactive.example.app.web"
+}
+
+dependencies {
+    implementation project(":domain:autoconfiguration")
+    implementation 'org.openapitools:jackson-databind-nullable'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += "$buildDir/openApiGenerate/src/main/java"
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("generateServerApi")
+    mustRunAfter("generateServerApi")
+}
+

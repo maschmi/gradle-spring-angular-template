@@ -1,0 +1,11 @@
+dependencyResolutionManagement {
+    includeBuild("../platform-dependencies")
+    repositories.gradlePluginPortal()
+}
+
+rootProject.name = 'build-logic'
+
+include('structure-plugins')
+include('java-plugins')
+include('angular-plugins')
+

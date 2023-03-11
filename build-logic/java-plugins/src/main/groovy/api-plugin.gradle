@@ -1,0 +1,83 @@
+plugins {
+    id 'org.openapi.generator'
+}
+
+class ServerApiSpec {
+    String key
+    String inputSpec
+
+    ServerApiSpec(String key, String inputSpec) {
+        this.key = key
+        this.inputSpec = inputSpec
+    }
+}
+
+interface ApiExtension {
+    ListProperty<ServerApiSpec> getInputSpecs()
+    Property<String> getOutputDir()
+    Property<String> getTitle()
+    Property<String> getArtifactId()
+    Property<String> getPackageBase()
+}
+
+class ApiPlugin implements Plugin<Project> {
+
+    @Override
+    void apply(Project project) {
+        ApiExtension extension = project.extensions.create('apiServer', ApiExtension)
+        project.tasks.register("generateServerApi") {
+            Collection<Task> genTasks
+            doFirst {
+                //first we created the task for each config pair
+                genTasks =  extension.inputSpecs.get()
+                        .collect {
+                            def key = it.key
+                            def file = it.inputSpec
+                            return configureServerApi(project, key, file, extension)
+                        }
+                //then we execute each task action
+                genTasks.each {
+                    t ->
+                        t.actions.each { it.execute(t) }
+                }
+            }
+
+        }
+    }
+
+    private Task configureServerApi(Project project, key, file, extension) {
+        // here we can configure the task directly as we plan to run it directly later
+        return project.tasks.create(name: key, type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+            generatorName = "spring"
+
+            inputSpec = file
+            outputDir = extension.outputDir.get()
+            modelNameSuffix = "DTO"
+            globalProperties = [
+                    supportingFiles: "ApiUtil.java",
+                    modelDocs      : "false",
+                    models         : "",
+                    apis           : ""
+            ]
+            configOptions = [
+                    title                : extension.title.get(),
+                    artifactId           : extension.artifactId.get(),
+                    reactive             : "true",
+                    documentationProvider: "none",
+                    apiPackage           : "${extension.packageBase.get()}.api.${key}",
+                    modelPackage         : "${extension.packageBase.get()}.api.${key}.model",
+                    // if interface only and no delegate pattern is configures the base paht
+                    // is no configured correctly
+                    delegatePattern      : "true",
+                    interfaceOnly        : "false",
+                    useOptional          : "true",
+                    useTags              : "true",
+                    useBeanValidation    : "true",
+                    useSpringBoot3       : "true",
+                    performBeanValidation: "true",
+                    serializableModel    : "true"]
+
+        }
+    }
+}
+

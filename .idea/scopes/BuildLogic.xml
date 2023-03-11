@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="BuildLogic" pattern="file[build-logic]:*/||file[build-logic*]:*//*" />
+</component>

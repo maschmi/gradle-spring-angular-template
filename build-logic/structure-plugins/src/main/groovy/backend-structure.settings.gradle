@@ -1,0 +1,34 @@
+//inspired from https://github.com/jjohannes/understanding-gradle/raw/groovy-dsl/14_Settings_Plugins/my-build-logic/structure-plugins/src/main/groovy/my-project-structure.settings.gradle
+
+// Locations of Gradle plugins
+pluginManagement {
+    repositories.gradlePluginPortal()
+}
+
+// Location of other components
+dependencyResolutionManagement {
+    repositories.mavenCentral()
+    rootDir.parentFile.listFiles()?.findAll {
+        new File(it, "settings.gradle").exists()
+    }?.each {
+        includeBuild(it.path)
+    }
+}
+
+def pathSep = File.separator
+//scan all subprojects and add them
+fileTree(rootDir.path).findAll {
+    ("build.gradle" == it.name)
+}?.each {
+    println("Found " + it.path)
+    String path = it.path
+    def sub = path.replace(rootDir.path, '')
+            .replace('/build.gradle', '')
+            .replaceAll(pathSep, ':')
+    if (sub.isEmpty()) {
+        return
+    }
+    println("Including " + sub)
+    include(sub)
+}
+

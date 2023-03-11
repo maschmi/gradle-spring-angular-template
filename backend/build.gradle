@@ -1,0 +1,46 @@
+
+def rootGroup = "de.maschmi.template.reactive.example"
+group = rootGroup
+version = "1.0.0"
+
+subprojects.forEach {p ->
+    p.group = rootGroup + p.path.replace(":", ".") + "." + p.name
+    p.version = version
+}
+
+tasks.register("test").configure {
+    group = "verification"
+    addDependsOnAllExistingTasks("test", it)
+}
+tasks.register("jar").configure {
+    group = "build"
+    addDependsOnAllExistingTasks("jar", it)
+}
+
+
+tasks.register("check").configure {
+    group = "verification"
+    addDependsOnAllExistingTasks("check", it)
+}
+
+tasks.register("build").configure {
+    group = "build"
+    dependsOn(":app:build")
+}
+
+tasks.register("clean").configure {
+    group = "build"
+    addDependsOnAllExistingTasks("clean", it)
+}
+
+tasks.register("bootRun").configure {
+    group = "application"
+    dependsOn(":app:bootRun")
+}
+
+private addDependsOnAllExistingTasks(String taskName, def configuration) {
+    subprojects.each {
+        it.getTasksByName(taskName, false).each { tsk -> configuration.dependsOn(tsk) }
+    }
+}
+

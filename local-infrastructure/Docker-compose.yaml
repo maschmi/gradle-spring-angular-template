@@ -1,0 +1,18 @@
+version: "3.8"
+name: example
+
+services:
+  postgresql:
+    image: zcube/bitnami-compat-postgresql:15.2.0
+    environment:
+      - POSTGRESQL_DATABASE=example
+      - POSTGRESQL_USERNAME=example
+      - POSTGRESQL_PASSWORD=example
+    ports:
+      - "5432:5432"
+    volumes:
+      - example-postgresql-data:/bitnami/postgresql
+
+volumes:
+  example-postgresql-data:
+

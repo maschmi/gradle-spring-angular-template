@@ -1,0 +1,13 @@
+spring:
+  jpa:
+    open-in-view: false
+  r2dbc:
+    name: example
+    username: example
+    password: example
+    url: r2dbc:postgresql://localhost:5432/example
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/example
+    user: example
+    password: example
+    change-log: db/changelog/master.xml

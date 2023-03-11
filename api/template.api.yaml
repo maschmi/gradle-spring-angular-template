@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Example
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /example:
+    get:
+      operationId: getSomething
+      tags:
+        - exampleQuery
+      description: example
+      responses:
+        "200":
+          description: example
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleResponse'
+
+components:
+  schemas:
+
+    ExampleResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+           type: string
+
+

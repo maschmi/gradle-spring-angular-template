@@ -1,0 +1,10 @@
+plugins {
+    id 'backend-spring'
+    id 'backend-domain'
+}
+
+dependencies {
+    api project(":domain:example:api")
+    implementation project(":domain:example:core")
+    implementation project(":persistence:autoconfiguration")
+}

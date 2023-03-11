@@ -1,0 +1,9 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+dependencies {
+    implementation enforcedPlatform("de.maschmi.template.reactive.example:java-deps")
+    implementation("org.openapitools:openapi-generator-gradle-plugin")
+    implementation("com.github.node-gradle:gradle-node-plugin:3.5.1")
+}

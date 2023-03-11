@@ -1,0 +1,9 @@
+plugins {
+    id 'backend-spring'
+    id 'backend-persistence'
+    id 'backend-rdbms'
+}
+
+dependencies {
+    implementation(project(":persistence:postgres"))
+}

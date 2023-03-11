@@ -1,0 +1,13 @@
+plugins {
+   id("angular-node")
+}
+
+apply plugin: ApiClientPlugin
+
+apiClient {
+   inputSpecs = [
+           new ClientApiSpec("example", "$rootDir/../api/template.api.yaml"),
+           new ClientApiSpec("example2", "$rootDir/../api/template2.api.yaml")
+   ]
+   outputDir = "$rootDir/src/generated"
+}
